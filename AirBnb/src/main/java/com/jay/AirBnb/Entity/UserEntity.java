@@ -31,7 +31,7 @@ public class UserEntity implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String password;
 
 
@@ -41,6 +41,7 @@ public class UserEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+    @ElementCollection(fetch=FetchType.EAGER)  // JPA will create a new table for roles
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 

@@ -5,7 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -33,7 +33,7 @@ public class JWTService {
                 .compact();
     }
 
-    public String generateRefreshTokens(UserEntity user){
+    public String generateRefreshToken(UserEntity user){
         return Jwts.builder()
                 .subject(user.getId().toString())
                 .issuedAt(new Date())
