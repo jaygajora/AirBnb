@@ -32,6 +32,19 @@ public class AuthService {
         String email = signUpRequestDTO.getEmail();
         String password = signUpRequestDTO.getPassword();
 
+        if(name == null || name.trim().isEmpty()){
+            throw new RuntimeException("Please enter your Name!");
+        }
+
+        if(email == null || email.trim().isEmpty()){
+            throw new RuntimeException("Please enter your Email!");
+        }
+
+        if(password == null || password.trim().isEmpty()){
+            throw new RuntimeException("Please enter your Password");
+        }
+
+
         UserEntity userAlreadyExists = userRepository.findByEmail(email).orElse(null);
 
         if(userAlreadyExists != null){
@@ -51,6 +64,14 @@ public class AuthService {
     public String[] login(LoginDTO loginDTO){
         String username = loginDTO.getEmail();
         String password = loginDTO.getPassword();
+
+        if(username == null || username.trim().isEmpty()){
+            throw new RuntimeException("Please enter your Username/Email!");
+        }
+
+        if(password == null || password.trim().isEmpty()){
+            throw new RuntimeException("Please enter your Password");
+        }
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 username, password
