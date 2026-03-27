@@ -42,9 +42,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request, HttpServletResponse response){
 
-        String email = loginDTO.getEmail().trim();
+        String email = loginDTO.getEmail();
 
-        UserEntity user = userRepository.findByEmail(email).orElse(null);
+        if(email == null){
+            throw new RuntimeException("Please enter your Email");
+        }
+
+        UserEntity user = userRepository.findByEmail(email.trim()).orElse(null);
 
         if(user == null){
             throw new ResourceNotFoundException("No such User found with email: " + email);
