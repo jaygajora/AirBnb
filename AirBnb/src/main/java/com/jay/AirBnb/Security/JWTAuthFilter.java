@@ -7,6 +7,7 @@ import com.jay.AirBnb.Service.UserServiceImplementation;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
@@ -34,15 +36,39 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException{
         try{
+
+            String token = null;
+
             final String requestTokenHeader = request.getHeader("Authorization");
 
-            if(requestTokenHeader == null || !requestTokenHeader.startsWith("Bearer")){
-                filterChain.doFilter(request, response);
-                return;
+//            if(requestTokenHeader == null || !requestTokenHeader.startsWith("Bearer")) {
+//                filterChain.doFilter(request, response);
+//                return;
+//            }
+
+            if(requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")){
+                token = requestTokenHeader.substring(7);
             }
 
-            String token = requestTokenHeader.split("Bearer ")[1];
-            Long userId = jwtService.getUserIdFromToken(token);
+//            token = requestTokenHeader.split("Bearer ")[1];
+
+            if(token == null){
+                Cookie[] cookies = request.getCookies();
+
+                if(cookies != null){
+                    token = Arrays.stream(cookies)
+                            .filter((cookie) -> cookie.getName().equals("accessToken"))
+                            .findFirst()
+                            .map(Cookie::getValue)
+                            .orElse(null);
+                }
+            }
+
+            Long userId = null;
+
+            if(token != null) {
+                userId = jwtService.getUserIdFromToken(token);
+            }
 
             if(userId != null && SecurityContextHolder.getContext().getAuthentication() == null){
                 UserEntity user = userService.getUserById(userId);

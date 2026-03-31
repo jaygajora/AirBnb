@@ -31,6 +31,7 @@ public class AuthController {
 
     @Autowired
     AuthService authService;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -56,10 +57,16 @@ public class AuthController {
 
         String[] tokens = authService.login(loginDTO);
 
-        Cookie cookie = new Cookie("refreshToken", tokens[1]);
-        cookie.setHttpOnly(true);
+        Cookie refreshCookie = new Cookie("refreshToken", tokens[1]);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setPath("/");
 
-        response.addCookie(cookie);
+        Cookie accessCookie = new Cookie("accessToken", tokens[0]);
+        accessCookie.setHttpOnly(true);
+        accessCookie.setPath("/");
+
+        response.addCookie(accessCookie);
+        response.addCookie(refreshCookie);
 
         return new ResponseEntity<>(new LoginResponseDTO(tokens[0]), HttpStatus.OK);
     }
