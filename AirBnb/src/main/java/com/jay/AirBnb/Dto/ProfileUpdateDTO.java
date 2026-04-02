@@ -10,4 +10,5 @@ public class ProfileUpdateDTO {
     private String fullName;
     private Gender gender;
     private LocalDate dateOfBirth;
+    private String email;
 }
