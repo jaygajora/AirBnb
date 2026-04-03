@@ -11,4 +11,7 @@ public interface UserService {
     UserDTO getProfile();
 
     String updateProfile(ProfileUpdateDTO profileUpdateDTO);
+
+    // this should be under /admin and not /user
+//    String setUserAsAdmin(String email);
 }
