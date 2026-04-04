@@ -1,5 +1,6 @@
 package com.jay.AirBnb.Dto;
 
+import com.jay.AirBnb.Entity.HotelContactInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,4 +15,6 @@ public class HotelDTO {
     private String[] photos;
     private String[] amenities;
     private Boolean active;
+    private HotelContactInfo contactInfo;
+//    private UserEntity owner;
 }

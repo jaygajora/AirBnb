@@ -42,6 +42,9 @@ public class HotelEntity {
     @ManyToOne(optional = false)
     private UserEntity owner;
 
+    @Embedded
+    private HotelContactInfo contactInfo;
+
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;
