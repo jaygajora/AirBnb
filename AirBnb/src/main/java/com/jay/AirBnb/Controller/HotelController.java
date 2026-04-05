@@ -33,6 +33,12 @@ public class HotelController {
         return new ResponseEntity<>(hotelService.getHotelInfo(id), HttpStatus.OK);
     }
 
+    @PatchMapping("/hotel/{id}")
+    public ResponseEntity<HotelDTO> updateHotel(@PathVariable Long id, @RequestBody HotelDTO hotelDTO){
+        HotelDTO updatedHotel = hotelService.updateHotel(id, hotelDTO);
+        return new ResponseEntity<>(updatedHotel, HttpStatus.OK);
+    }
+
     @DeleteMapping("/hotel/{id}")
     public ResponseEntity<String> deleteHotel(@PathVariable Long id){
         return new ResponseEntity<>(hotelService.deleteHotel(id), HttpStatus.OK);
@@ -41,6 +47,11 @@ public class HotelController {
     @GetMapping("/hotel")
     public ResponseEntity<List<HotelDTO>> getAllHotelsByOwner(){
         return new ResponseEntity<>(hotelService.getAllHotelsByOwner(), HttpStatus.OK);
+    }
+
+    @PatchMapping("/hotel/{id}/toggle-active")
+    public ResponseEntity<HotelDTO> toggleActiveHotel(@PathVariable Long id){
+        return new ResponseEntity<>(hotelService.toggleHotelActiveStatus(id), HttpStatus.OK);
     }
 
 }

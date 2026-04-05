@@ -7,11 +7,10 @@ import com.jay.AirBnb.Entity.UserEntity;
 import com.jay.AirBnb.Exceptions.ResourceNotFoundException;
 import com.jay.AirBnb.Exceptions.UnauthorisedException;
 import com.jay.AirBnb.Repository.HotelRepository;
-import com.jay.AirBnb.Repository.UserRepository;
 import com.jay.AirBnb.Service.Interface.HotelService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -79,6 +78,53 @@ public class HotelServiceImplementation implements HotelService {
         return modelMapper.map(hotel, HotelDTO.class);
     }
 
+    public HotelDTO updateHotel(Long id, HotelDTO hotelDTO){
+        if(id == null){
+            throw new IllegalArgumentException("Id cannot be null");
+        }
+
+        HotelEntity hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No hotel found with Id: " + id));
+
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(!user.equals(hotel.getOwner())){
+            throw new AccessDeniedException("You are not the owner of the hotel and hence you cannot edit the hotel");
+        }
+
+        String name = hotelDTO.getName();
+
+        if(name != null && !name.trim().isEmpty() && !name.equals(hotel.getName())){
+            hotel.setName(name);
+        }
+
+        String city = hotelDTO.getCity();
+
+        if(city != null && !city.trim().isEmpty() && !city.equals(hotel.getCity())){
+            hotel.setCity(city);
+        }
+
+        HotelContactInfo contactInfo = hotelDTO.getContactInfo();
+
+        if(contactInfo != null){
+//            String address = contactInfo.getAddress();
+//            String location = contactInfo.getLocation();
+//            String email = contactInfo.getEmail();
+//            String phone = contactInfo.getPhoneNumber();
+
+            hotel.setContactInfo(contactInfo);
+        }
+
+        Boolean active = hotelDTO.getActive();
+
+        if(active !=  null && active != hotel.getActive()){
+            hotel.setActive(active);
+        }
+
+        hotel = hotelRepository.save(hotel);
+
+        return modelMapper.map(hotel, HotelDTO.class);
+    }
+
     public String deleteHotel(Long id){
         if(id == null){
             throw new ResourceNotFoundException("Hotel Id required to delete the current hotel");
@@ -114,6 +160,28 @@ public class HotelServiceImplementation implements HotelService {
 
     }
 
+    public HotelDTO toggleHotelActiveStatus(Long id){
+        if(id == null){
+            throw new ResourceNotFoundException("Hotel Id CANNOT be EMPTY!");
+        }
+
+        HotelEntity hotel = (HotelEntity) hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No hotel found with Id: " + id));
+
+        UserEntity loggedInUser = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(!loggedInUser.equals(hotel.getOwner())){
+            throw new UnauthorisedException("You are not the OWNER of this hotel and hence you cannot toggle its ACTIVE status!");
+        }
+
+        Boolean active = hotel.getActive();
+
+        hotel.setActive(!active);
+
+        hotelRepository.save(hotel);
+
+        return modelMapper.map(hotel, HotelDTO.class);
+    }
+
     //public method for users
     public HotelDTO getHotelDetails(Long id){
         if(id == null){
@@ -124,4 +192,6 @@ public class HotelServiceImplementation implements HotelService {
 
         return modelMapper.map(hotel, HotelDTO.class);
     }
+
+
 }
