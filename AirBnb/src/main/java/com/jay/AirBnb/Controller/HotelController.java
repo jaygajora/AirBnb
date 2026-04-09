@@ -54,4 +54,6 @@ public class HotelController {
         return new ResponseEntity<>(hotelService.toggleHotelActiveStatus(id), HttpStatus.OK);
     }
 
+
+
 }

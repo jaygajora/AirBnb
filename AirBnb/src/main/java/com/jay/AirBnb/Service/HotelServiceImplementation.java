@@ -3,11 +3,14 @@ package com.jay.AirBnb.Service;
 import com.jay.AirBnb.Dto.HotelDTO;
 import com.jay.AirBnb.Entity.HotelContactInfo;
 import com.jay.AirBnb.Entity.HotelEntity;
+import com.jay.AirBnb.Entity.RoomEntity;
 import com.jay.AirBnb.Entity.UserEntity;
 import com.jay.AirBnb.Exceptions.ResourceNotFoundException;
 import com.jay.AirBnb.Exceptions.UnauthorisedException;
 import com.jay.AirBnb.Repository.HotelRepository;
+import com.jay.AirBnb.Repository.RoomRepository;
 import com.jay.AirBnb.Service.Interface.HotelService;
+import com.jay.AirBnb.Service.Interface.RoomService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,6 +25,9 @@ public class HotelServiceImplementation implements HotelService {
 
     @Autowired
     HotelRepository hotelRepository;
+
+    @Autowired
+    RoomRepository roomRepository;
 
     @Autowired
     ModelMapper modelMapper;
@@ -138,6 +144,10 @@ public class HotelServiceImplementation implements HotelService {
 
         if(!owner.equals(loggedInUser)){
             throw new UnauthorisedException("You are not the owner of the hotel and hence you are NOT allowed to DELETE this hotel");
+        }
+
+        for(RoomEntity room : hotel.getRooms()){
+            roomRepository.deleteById(room.getId());
         }
 
         hotelRepository.deleteById(id);
