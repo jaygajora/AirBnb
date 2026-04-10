@@ -53,7 +53,4 @@ public class HotelController {
     public ResponseEntity<HotelDTO> toggleActiveHotel(@PathVariable Long id){
         return new ResponseEntity<>(hotelService.toggleHotelActiveStatus(id), HttpStatus.OK);
     }
-
-
-
 }

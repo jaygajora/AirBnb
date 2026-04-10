@@ -117,7 +117,7 @@ public class RoomServiceImplementation implements RoomService {
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if(!user.equals(hotel.getOwner())){
-            throw new UnauthorisedException("You are not the owner of this hotel and hence you cannot this room");
+            throw new UnauthorisedException("You are not the owner of this hotel and hence you cannot update this room");
         }
 
         String type = roomDTO.getType();
@@ -183,6 +183,12 @@ public class RoomServiceImplementation implements RoomService {
         }
 
         HotelEntity hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("No hotel found with Id: " + hotelId));
+
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(!user.equals(hotel.getOwner())){
+            throw new UnauthorisedException("You are not the owner of the hotel and hence cannot access the rooms of hotels!");
+        }
 
         return hotel.getRooms()
                 .stream()
