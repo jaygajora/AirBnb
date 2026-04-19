@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class GuestServiceImplementation implements GuestService {
@@ -113,13 +114,16 @@ public class GuestServiceImplementation implements GuestService {
     public List<GuestDTO> getAllGuests(){
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        List<GuestDTO> guests = guestRepository.findByUser(user);
+        List<GuestEntity> guests = guestRepository.findByUser(user);
 
         if(guests == null){
             throw new ResourceNotFoundException("No guests found which were added by user: " + user.getEmail());
         }
 
-        return guests;
+        return guests.stream()
+                .map((guest) -> modelMapper.map(guest, GuestDTO.class))
+                .collect(Collectors.toList());
+
     }
 
     //deleteGuest(Long guestId)

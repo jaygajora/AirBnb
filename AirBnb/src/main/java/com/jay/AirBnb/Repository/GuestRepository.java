@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface GuestRepository extends JpaRepository<GuestEntity, Long> {
-    List<GuestDTO> findByUser(UserEntity user);
+    List<GuestEntity> findByUser(UserEntity user);
 }
