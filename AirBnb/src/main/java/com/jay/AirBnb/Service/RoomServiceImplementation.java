@@ -9,6 +9,7 @@ import com.jay.AirBnb.Exceptions.ResourceNotFoundException;
 import com.jay.AirBnb.Exceptions.UnauthorisedException;
 import com.jay.AirBnb.Repository.HotelRepository;
 import com.jay.AirBnb.Repository.RoomRepository;
+import com.jay.AirBnb.Service.Interface.InventoryService;
 import com.jay.AirBnb.Service.Interface.RoomService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,15 @@ public class RoomServiceImplementation implements RoomService {
     @Autowired
     private ModelMapper modelMapper;
 
-    public RoomDTO addRoom(Long id, RoomDTO roomDTO){
-        if(id == null){
+    @Autowired
+    private InventoryService inventoryService;
+
+    public RoomDTO addRoom(Long hotelId, RoomDTO roomDTO){
+        if(hotelId == null){
             throw new IllegalArgumentException("Hotel Id cannot be EMPTY!");
         }
 
-        HotelEntity hotel = hotelRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No hotel found with id: " + id));
+        HotelEntity hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("No hotel found with id: " + hotelId));
 
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -69,6 +73,10 @@ public class RoomServiceImplementation implements RoomService {
         rooms.setHotel(hotel);
 
         roomRepository.save(rooms);
+
+        if(hotel.getActive()){
+            inventoryService.initializeRoomForAYear(rooms);
+        }
 
         return modelMapper.map(rooms, RoomDTO.class);
     }
@@ -145,7 +153,10 @@ public class RoomServiceImplementation implements RoomService {
         room.setBasePrice(basePrice);
         room.setTotalCount(totalCount);
         room.setCapacity(capacity);
-        roomRepository.save(room);
+
+        // TODO: if price or inventory is updated, then update the inventory for this room
+
+        room = roomRepository.save(room);
 
         return modelMapper.map(room, RoomDTO.class);
     }
@@ -172,6 +183,7 @@ public class RoomServiceImplementation implements RoomService {
             throw new UnauthorisedException("You are not the owner of this hotel and hence you cannot delete this room");
         }
 
+        inventoryService.deleteAllInventoriesOfARoom(room);
         roomRepository.deleteById(roomId);
 
         return modelMapper.map(room, RoomDTO.class);

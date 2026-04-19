@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
-@RequestMapping("/hotel")
 @RestController
+@RequestMapping("/hotel")
 public class HotelBrowseController {
 
     @Autowired

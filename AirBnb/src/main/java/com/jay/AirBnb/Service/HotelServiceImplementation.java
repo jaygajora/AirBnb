@@ -8,14 +8,17 @@ import com.jay.AirBnb.Entity.UserEntity;
 import com.jay.AirBnb.Exceptions.ResourceNotFoundException;
 import com.jay.AirBnb.Exceptions.UnauthorisedException;
 import com.jay.AirBnb.Repository.HotelRepository;
+import com.jay.AirBnb.Repository.InventoryRepository;
 import com.jay.AirBnb.Repository.RoomRepository;
 import com.jay.AirBnb.Service.Interface.HotelService;
+import com.jay.AirBnb.Service.Interface.InventoryService;
 import com.jay.AirBnb.Service.Interface.RoomService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +31,9 @@ public class HotelServiceImplementation implements HotelService {
 
     @Autowired
     RoomRepository roomRepository;
+
+    @Autowired
+    private InventoryService inventoryService;
 
     @Autowired
     ModelMapper modelMapper;
@@ -67,7 +73,7 @@ public class HotelServiceImplementation implements HotelService {
 //        String city = hotelDTO.getCity();
 //    }
 
-
+    @Override
     public HotelDTO getHotelInfo(Long id){
         if(id == null){
             throw new ResourceNotFoundException("Hotel Id cannot be EMPTY!");
@@ -84,6 +90,7 @@ public class HotelServiceImplementation implements HotelService {
         return modelMapper.map(hotel, HotelDTO.class);
     }
 
+    @Override
     public HotelDTO updateHotel(Long id, HotelDTO hotelDTO){
         if(id == null){
             throw new IllegalArgumentException("Id cannot be null");
@@ -128,9 +135,17 @@ public class HotelServiceImplementation implements HotelService {
 
         hotel = hotelRepository.save(hotel);
 
+        if(hotel.getActive()){
+            for(RoomEntity room : hotel.getRooms()){
+                inventoryService.initializeRoomForAYear(room);
+            }
+        }
+
         return modelMapper.map(hotel, HotelDTO.class);
     }
 
+    @Transactional
+    @Override
     public String deleteHotel(Long id){
         if(id == null){
             throw new ResourceNotFoundException("Hotel Id required to delete the current hotel");
@@ -147,6 +162,7 @@ public class HotelServiceImplementation implements HotelService {
         }
 
         for(RoomEntity room : hotel.getRooms()){
+            inventoryService.deleteAllInventoriesOfARoom(room);
             roomRepository.deleteById(room.getId());
         }
 
@@ -155,6 +171,7 @@ public class HotelServiceImplementation implements HotelService {
         return hotel.getName() + " DELETED SUCCESSFULLY";
     }
 
+    @Override
     public List<HotelDTO> getAllHotelsByOwner(){
         UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -170,6 +187,7 @@ public class HotelServiceImplementation implements HotelService {
 
     }
 
+    @Override
     public HotelDTO toggleHotelActiveStatus(Long id){
         if(id == null){
             throw new ResourceNotFoundException("Hotel Id CANNOT be EMPTY!");
@@ -189,9 +207,16 @@ public class HotelServiceImplementation implements HotelService {
 
         hotelRepository.save(hotel);
 
+        if(hotel.getActive()){
+            for(RoomEntity room : hotel.getRooms()) {
+                inventoryService.initializeRoomForAYear(room);
+            }
+        }
+
         return modelMapper.map(hotel, HotelDTO.class);
     }
 
+    @Override
     //public method for users
     public HotelDTO getHotelDetails(Long id){
         if(id == null){
