@@ -10,5 +10,5 @@ public interface GuestService {
     GuestDTO getGuestById(Long guestId);
     List<GuestDTO> getAllGuests();
     String deleteGuest(Long guestId);
-
 }
+

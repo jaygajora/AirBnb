@@ -19,7 +19,6 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Long
     void deleteByRoom(RoomEntity room);
     List<InventoryEntity> findByRoomOrderByDate(RoomEntity roomId);
 
-
     @Query("""
         SELECT i
             FROM InventoryEntity i
@@ -29,7 +28,8 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Long
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<InventoryEntity> getInventoryAndLockBeforeUpdate(@Param("roomId") Long roomId,
                                                        @Param("startDate") LocalDate startDate,
-                                                       @Param("endDate") LocalDate endDate);
+                                                       @Param("endDate") LocalDate endDate
+    );
 
     @Modifying
     @Query("""
@@ -45,5 +45,37 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Long
                          @Param("startDate")LocalDate startDate,
                          @Param("endDate") LocalDate endDate
 
-                         );
+    );
+
+    @Query("""
+        SELECT i
+        FROM InventoryEntity i
+                WHERE roomId = :roomId
+                AND i.date BETWEEN :checkInDate AND :checkOutDate
+                AND i.close = false
+                AND (i.totalCount - i.bookCount - i.reservedCount) >= :roomsCount
+        """)
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    List<InventoryDTO> findAndLockAvailableInventory(
+            @Param("roomId") Long roomId,
+            @Param("checkInDate") LocalDate checkInDate,
+            @Param("checkOutDate") LocalDate checkOutDate,
+            @Param("roomsCount") Integer roomsCount
+    );
+
+    @Modifying
+    @Query("""
+                UPDATE i
+                SET i.reservedCount = i.reservedCount + :roomsCount
+                                WHERE roomId = :roomId
+                                AND i.date BETWEEN :checkInDate AND :checkOutDate
+                                AND (i.totalCount - i.reservedCount - i.bookCount) >= :roomsCount
+                                AND i.close = false                                                         
+            """)
+    void initBooking(
+            @Param("roomId") Long roomId,
+            @Param("checkInDate") LocalDate checkInDate,
+            @Param("checkOutDate") LocalDate checkOutDate,
+            @Param("roomsCount") Integer roomsCount
+    );
 }
