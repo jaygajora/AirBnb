@@ -3,17 +3,16 @@ package com.jay.AirBnb.Service;
 import com.jay.AirBnb.Dto.BookingDTO;
 import com.jay.AirBnb.Dto.BookingRequest;
 import com.jay.AirBnb.Dto.InventoryDTO;
-import com.jay.AirBnb.Entity.BookingEntity;
-import com.jay.AirBnb.Entity.HotelEntity;
-import com.jay.AirBnb.Entity.RoomEntity;
-import com.jay.AirBnb.Entity.UserEntity;
+import com.jay.AirBnb.Entity.*;
 import com.jay.AirBnb.Enums.BookingStatus;
 import com.jay.AirBnb.Exceptions.ResourceNotFoundException;
+import com.jay.AirBnb.Exceptions.UnauthorisedException;
 import com.jay.AirBnb.Repository.BookingRepository;
 import com.jay.AirBnb.Repository.HotelRepository;
 import com.jay.AirBnb.Repository.InventoryRepository;
 import com.jay.AirBnb.Repository.RoomRepository;
 import com.jay.AirBnb.Service.Interface.BookingService;
+import com.jay.AirBnb.Strategy.PricingService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,6 +41,9 @@ public class BookingServiceImplementation implements BookingService {
     private BookingRepository bookingRepository;
 
     @Autowired
+    private PricingService pricingService;
+
+    @Autowired
     ModelMapper modelMapper;
 
     @Transactional
@@ -55,12 +57,16 @@ public class BookingServiceImplementation implements BookingService {
         Long roomId = bookingRequest.getRoomId();
         RoomEntity room = roomRepository.findById(roomId).orElseThrow(() -> new ResourceNotFoundException("No room found with roomId: " + roomId));
 
+        if(!hotel.equals(room.getHotel())){
+            throw new UnauthorisedException("This room does not belong to this hotel");
+        }
+
         LocalDate checkInDate = bookingRequest.getCheckInDate();
         LocalDate checkOutDate = bookingRequest.getCheckOutDate();
 
         Integer roomsCount = bookingRequest.getRoomsCount();
 
-        List<InventoryDTO> inventoryList = inventoryRepository.findAndLockAvailableInventory(
+        List<InventoryEntity> inventoryList = inventoryRepository.findAndLockAvailableInventory(
                 roomId,
                 checkInDate,
                 checkOutDate,
@@ -98,12 +104,28 @@ public class BookingServiceImplementation implements BookingService {
 
         bookingRepository.save(booking);
 
-        return modelMapper.map(booking, BookingDTO.class)
+        return modelMapper.map(booking, BookingDTO.class);
 
     }
 
     // add Guests
 
-    // initialize Payments
+    // initiate Payments
+
+    // capture payment
+
+    // cancel booking
+
+    // get booking status
+
+    // get All bookigns by HotelId
+
+    // get Hotel Report
+
+    // get my booking (user's booking/ bookingsByUser)
+
+    //hasBookingExpired
+
+
 
 }

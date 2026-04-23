@@ -56,7 +56,7 @@ public interface InventoryRepository extends JpaRepository<InventoryEntity, Long
                 AND (i.totalCount - i.bookCount - i.reservedCount) >= :roomsCount
         """)
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    List<InventoryDTO> findAndLockAvailableInventory(
+    List<InventoryEntity> findAndLockAvailableInventory(
             @Param("roomId") Long roomId,
             @Param("checkInDate") LocalDate checkInDate,
             @Param("checkOutDate") LocalDate checkOutDate,
