@@ -14,4 +14,5 @@ public interface BookingService {
     BookingStatus getBookingStatusById(Long bookingId);
     boolean hasBookingExpired(BookingEntity booking);
     List<BookingDTO> getBookingsByUser(Long userId);
+    List<BookingDTO> getBookingsByHotelId(Long hotelId);
 }

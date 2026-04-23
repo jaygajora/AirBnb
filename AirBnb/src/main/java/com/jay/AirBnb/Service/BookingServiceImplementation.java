@@ -175,6 +175,8 @@ public class BookingServiceImplementation implements BookingService {
 
     // cancel booking
 
+    // get Hotel Report
+
     // get booking status
     @Override
     public BookingStatus getBookingStatusById(Long bookingId){
@@ -201,8 +203,26 @@ public class BookingServiceImplementation implements BookingService {
     }
 
     // get All bookings by HotelId
+    @Override
+    public List<BookingDTO> getBookingsByHotelId(Long hotelId){
+        if(hotelId == null){
+            throw new IllegalArgumentException("Hotel id CANNOT be NULL | EMPTY!");
+        }
 
-    // get Hotel Report
+        HotelEntity hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("No hotel found with hotel id: " + hotelId));
+
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(!user.equals(hotel.getOwner())){
+            throw new UnauthorisedException("You are not the owner of this hotel and hence you cannot retrieve the bookings of this hotel");
+        }
+
+        List<BookingEntity> bookingsByHotel = bookingRepository.findByHotel(hotel);
+
+        return bookingsByHotel.stream()
+                .map((bookingEntity) -> modelMapper.map(bookingEntity, BookingDTO.class))
+                .collect(Collectors.toList());
+    }
 
     // get my booking (user's booking/ bookingsByUser)
     @Override
@@ -220,7 +240,5 @@ public class BookingServiceImplementation implements BookingService {
     public boolean hasBookingExpired(BookingEntity booking){
         return booking.getCreateAt().plusMinutes(10).isBefore(LocalDateTime.now());
     }
-
-
 
 }
