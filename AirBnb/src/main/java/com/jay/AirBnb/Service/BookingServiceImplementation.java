@@ -26,6 +26,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImplementation implements BookingService {
@@ -175,6 +176,7 @@ public class BookingServiceImplementation implements BookingService {
     // cancel booking
 
     // get booking status
+    @Override
     public BookingStatus getBookingStatusById(Long bookingId){
         if(bookingId == null){
             throw new IllegalArgumentException("Booking id CANNOT be EMPTY | NULL");
@@ -203,8 +205,18 @@ public class BookingServiceImplementation implements BookingService {
     // get Hotel Report
 
     // get my booking (user's booking/ bookingsByUser)
+    @Override
+    public List<BookingDTO> getBookingsByUser(Long userId){
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<BookingEntity> bookingsByUser =  bookingRepository.findByUser(user);
+
+        return bookingsByUser.stream()
+                .map((bookingEntity) -> modelMapper.map(bookingEntity, BookingDTO.class))
+                .collect(Collectors.toList());
+    }
 
     //hasBookingExpired
+    @Override
     public boolean hasBookingExpired(BookingEntity booking){
         return booking.getCreateAt().plusMinutes(10).isBefore(LocalDateTime.now());
     }
