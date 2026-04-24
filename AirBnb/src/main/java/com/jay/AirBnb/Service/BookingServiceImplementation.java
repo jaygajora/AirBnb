@@ -1,9 +1,6 @@
 package com.jay.AirBnb.Service;
 
-import com.jay.AirBnb.Dto.BookingDTO;
-import com.jay.AirBnb.Dto.BookingRequest;
-import com.jay.AirBnb.Dto.GuestDTO;
-import com.jay.AirBnb.Dto.InventoryDTO;
+import com.jay.AirBnb.Dto.*;
 import com.jay.AirBnb.Entity.*;
 import com.jay.AirBnb.Enums.BookingStatus;
 import com.jay.AirBnb.Enums.Gender;
@@ -20,8 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
@@ -171,11 +170,46 @@ public class BookingServiceImplementation implements BookingService {
 
     // initiate Payments
 
+
     // capture payment
+
 
     // cancel booking
 
+
     // get Hotel Report
+    @Override
+    public HotelReportDTO getHotelReport(Long hotelId, LocalDate startDate, LocalDate endDate){
+        if(hotelId == null){
+            throw new IllegalArgumentException("HotelId cannot be NULL");
+        }
+
+        HotelEntity hotel = hotelRepository.findById(hotelId).orElseThrow(() -> new ResourceNotFoundException("No hotel found with hotelId: " + hotelId));
+
+        UserEntity user = (UserEntity) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if(!user.equals(hotel.getOwner())){
+            throw new UnauthorisedException("You are not the owner of this hotel and hence you cannot access the hotel report!");
+        }
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(LocalTime.MAX);
+
+        List<BookingEntity> bookings = bookingRepository.findByHotelAndCreatedAtBetween(hotel, startDateTime, endDateTime);
+
+        long totalConfirmedBookings = bookings.stream()
+                                                .filter((booking) -> booking.getStatus() == BookingStatus.CONFIRMED)
+                                                .count();
+
+        BigDecimal totalRevenueOfConfirmedBookings = bookings.stream()
+                .filter((booking) -> booking.getStatus() == BookingStatus.CONFIRMED)
+                .map((Booking) -> Booking.getAmount())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal averageRevenue = totalConfirmedBookings == 0 ? BigDecimal.ZERO : totalRevenueOfConfirmedBookings.divide(BigDecimal.valueOf(totalConfirmedBookings), RoundingMode.HALF_UP);
+
+        return new HotelReportDTO(totalConfirmedBookings, totalRevenueOfConfirmedBookings, averageRevenue);
+    }
 
     // get booking status
     @Override

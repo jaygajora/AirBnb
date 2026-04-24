@@ -3,9 +3,11 @@ package com.jay.AirBnb.Service.Interface;
 import com.jay.AirBnb.Dto.BookingDTO;
 import com.jay.AirBnb.Dto.BookingRequest;
 import com.jay.AirBnb.Dto.GuestDTO;
+import com.jay.AirBnb.Dto.HotelReportDTO;
 import com.jay.AirBnb.Entity.BookingEntity;
 import com.jay.AirBnb.Enums.BookingStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface BookingService {
@@ -15,4 +17,5 @@ public interface BookingService {
     boolean hasBookingExpired(BookingEntity booking);
     List<BookingDTO> getBookingsByUser(Long userId);
     List<BookingDTO> getBookingsByHotelId(Long hotelId);
+    HotelReportDTO getHotelReport(Long hotelId, LocalDate startDate, LocalDate endDate);
 }
