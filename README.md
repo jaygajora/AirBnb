@@ -156,7 +156,7 @@ Features complete persistence state tracking via `BookingStatus` (handling state
    ```
    ## Running the Application Locally
 
-You can run the Spring Boot application locally using the included Maven Wrapper. Execute the following command in your terminal:
+   You can run the Spring Boot application locally using the included Maven Wrapper. Execute the following command in your terminal:
 
-```bash
-./mvnw spring-boot:run
+   ```bash
+   ./mvnw spring-boot:run
