@@ -139,7 +139,7 @@ Features complete persistence state tracking via `BookingStatus` (handling state
    ```bash
    git clone [https://github.com/jaygajora/AirBnb.git](https://github.com/jaygajora/AirBnb.git)
    cd AirBnb/AirBnb
-
+   
 ### Local Deployment Steps
 
 1. **Configure Database Settings:**
@@ -149,10 +149,11 @@ Features complete persistence state tracking via `BookingStatus` (handling state
    ```bash
    # Using Unix Wrapper
    ./mvnw clean install
-
+   ```
    # Using Windows Command Prompt Wrapper
+   ```bash
    mvnw.cmd clean install
-
+   ```
    ## Running the Application Locally
 
 You can run the Spring Boot application locally using the included Maven Wrapper. Execute the following command in your terminal:
