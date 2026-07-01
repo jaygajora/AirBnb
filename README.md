@@ -107,7 +107,7 @@ A production-ready, enterprise-grade backend system engineered from scratch in J
         │
         └── test/java/com/jay/AirBnb/
             └── AirBnbApplicationTests.java     # Suite for context verification and integration test[cite: 1]
-
+```
 
 ## ⚡ Key Engineering Subsystems
 
