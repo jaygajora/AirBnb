@@ -1,17 +1,27 @@
-# 🏠 AirBnb Backend API
+# 🏨 AirBnB Backend API
 
 <div align="center">
 
 ![Java](https://img.shields.io/badge/Java-25-orange?style=for-the-badge&logo=openjdk)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-green?style=for-the-badge&logo=springboot)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.5-6DB33F?style=for-the-badge&logo=springboot)
+![Spring Security](https://img.shields.io/badge/Spring_Security-JWT-green?style=for-the-badge&logo=springsecurity)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-blue?style=for-the-badge&logo=postgresql)
-![JWT](https://img.shields.io/badge/JWT-Authentication-black?style=for-the-badge&logo=jsonwebtokens)
 ![Maven](https://img.shields.io/badge/Maven-Build-red?style=for-the-badge&logo=apachemaven)
 ![License](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)
 
-**A scalable Spring Boot backend for an Airbnb-style hotel booking platform with secure authentication, hotel management, dynamic pricing, inventory management, and booking services.**
+### A scalable Spring Boot backend for an Airbnb-style hotel booking platform featuring JWT authentication, hotel management, room inventory, dynamic pricing, and booking services.
 
 </div>
+
+---
+
+# 📖 Overview
+
+This project is a backend REST API for an Airbnb-like hotel booking platform.
+
+The application enables users to browse hotels, manage guests, make bookings, and allows hotel administrators to manage hotels, rooms, and inventory securely using JWT authentication.
+
+The backend follows a layered architecture using Spring Boot best practices.
 
 ---
 
@@ -34,102 +44,81 @@ The architecture follows a clean layered design making the application scalable,
 
 ---
 
+
 # ✨ Features
 
-## Authentication
-
+### 🔐 Authentication
 - User Registration
-- Login
+- User Login
 - JWT Authentication
+- Refresh Token Support
+- Role-Based Authorization
+
+### 👤 User Management
+- User Profile
+- Profile Update
+- Admin Promotion
+
+### 🏨 Hotel Management
+- Create Hotel
+- Update Hotel
+- Delete Hotel
+- Enable/Disable Hotel
+- View Hotel Information
+
+### 🛏 Room Management
+- Add Rooms
+- Update Rooms
+- Delete Rooms
+- View Rooms
+
+### 📦 Inventory Management
+- Manage Room Availability
+- Dynamic Surge Pricing
+- Booking Count Tracking
+
+### 👥 Guest Management
+- Add Guests
+- Update Guests
+- Delete Guests
+- View Guests
+
+### 💰 Dynamic Pricing
+- Strategy Pattern Implementation
+- Surge Pricing Support
+- Inventory-based Pricing
+
+### 🛡 Security
 - Spring Security
-- Role-based Authorization
-
----
-
-## Hotel Management
-
-- Add Hotels
-- Update Hotel Details
-- View Hotels
-- Browse Hotels
-- Hotel Contact Information
-
----
-
-## Guest Management
-
-- Guest Registration
-- Guest Details
-- Guest Bookings
-- Guest Profile
-
----
-
-## Booking Management
-
-- Create Booking
-- Cancel Booking
-- Booking Status Tracking
-- Booking History
-
----
-
-## Inventory Management
-
-- Room Availability
-- Room Inventory
-- Occupancy Tracking
-
----
-
-## Dynamic Pricing
-
-Pricing is implemented using the **Strategy Design Pattern**.
-
-Available strategies include:
-
-- Base Pricing
-- Holiday Pricing
-- Occupancy Pricing
-
-This makes pricing easily extendable without modifying existing code.
-
----
-
-## Admin Features
-
-- Hotel Reports
-- Booking Reports
-- Guest Reports
-- Administrative APIs
+- JWT Authentication
+- Access & Refresh Tokens
+- Role-Based Access Control
 
 ---
 
 # 🏗 Architecture
 
 ```
-Client
-   │
-REST API
-   │
-Controllers
-   │
-Services
-   │
-Repositories
-   │
-PostgreSQL Database
+                Client
+                   │
+             REST Controllers
+                   │
+              Service Layer
+                   │
+          Repository (JPA)
+                   │
+             PostgreSQL DB
 ```
 
-The project follows a layered architecture:
+The project follows a clean layered architecture:
 
 ```
 Controller
-     ↓
+      │
 Service
-     ↓
+      │
 Repository
-     ↓
+      │
 Database
 ```
 
@@ -141,11 +130,11 @@ Database
 |------------|----------|
 | Java 25 | Programming Language |
 | Spring Boot 3.5 | Backend Framework |
-| Spring Security | Authentication & Authorization |
-| JWT | Secure Authentication |
+| Spring Security | Authentication |
+| JWT | Authorization |
 | Spring Data JPA | ORM |
 | PostgreSQL | Database |
-| Maven | Dependency Management |
+| Maven | Build Tool |
 | Lombok | Boilerplate Reduction |
 | ModelMapper | DTO Mapping |
 
@@ -155,26 +144,46 @@ Database
 
 ```
 src
- ├── main
- │   ├── java
- │   │    └── com.jay.AirBnb
- │   │
- │   ├── Advice
- │   ├── Config
- │   ├── Controller
- │   ├── DTO
- │   ├── Entity
- │   ├── Enums
- │   ├── Exceptions
- │   ├── Repository
- │   ├── Security
- │   ├── Service
- │   │      └── Interface
- │   ├── Strategy
- │   └── AirBnbApplication.java
- │
- └── test
+│
+├── main
+│   ├── java
+│   │
+│   └── com.jay.AirBnb
+│       ├── Advice
+│       ├── Config
+│       ├── Controller
+│       ├── DTO
+│       ├── Entity
+│       ├── Enums
+│       ├── Exception
+│       ├── Repository
+│       ├── Security
+│       ├── Service
+│       ├── Strategy
+│       └── AirBnbApplication.java
+│
+└── test
 ```
+
+---
+
+# 🗄 Database Schema
+
+<p align="center">
+<img src="./docs/database-schema.png" width="1000">
+</p>
+
+### Main Entities
+
+- User
+- Guest
+- Hotel
+- Room
+- Inventory
+- Booking
+- BookingGuest
+- Payment
+- ContactInfo
 
 ---
 
@@ -187,20 +196,109 @@ User Login
 Authenticate Credentials
       │
       ▼
-Generate JWT Token
+Generate Access Token
       │
       ▼
-Client stores Token
+Generate Refresh Token
       │
       ▼
-Token sent in Authorization Header
+Client Stores Tokens
       │
       ▼
-JWT Filter validates request
+Authorization Header
       │
       ▼
-Access Protected APIs
+JWT Filter Validation
+      │
+      ▼
+Protected APIs
 ```
+
+---
+
+# 📡 REST API Reference
+
+---
+
+## 🔐 Authentication APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/auth/signup` | Register a new user |
+| POST | `/auth/login` | Login and receive JWT tokens |
+| POST | `/auth/refresh` | Generate a new Access Token using Refresh Token |
+
+---
+
+## 👤 User APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/user/profile` | Retrieve logged-in user's profile |
+| PATCH | `/user/profile` | Update logged-in user's profile |
+| POST | `/user/set-user-as-admin` | Promote a user to Admin |
+
+---
+
+## 👥 Guest APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/user/guests` | Add a new guest |
+| GET | `/user/guests` | Retrieve all guests |
+| GET | `/user/guests/{guestId}` | Retrieve guest by ID |
+| PATCH | `/user/guests/{guestId}` | Update guest details |
+| DELETE | `/user/guests/{guestId}` | Delete guest |
+
+---
+
+## 🏨 Hotel APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/admin/hotel` | Create a new hotel |
+| GET | `/admin/hotel` | Retrieve all hotels owned by the admin |
+| GET | `/admin/hotel/{id}` | Retrieve hotel details |
+| PATCH | `/admin/hotel/{id}` | Update hotel details |
+| DELETE | `/admin/hotel/{id}` | Delete hotel |
+| PATCH | `/admin/hotel/{id}/toggle-active` | Enable or disable hotel |
+
+---
+
+## 🌍 Hotel Browse APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/hotel/{id}/info` | Retrieve public hotel information |
+
+---
+
+## 🛏 Room APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/admin/hotel/{hotelId}/rooms` | Add a room to a hotel |
+| GET | `/admin/hotel/{hotelId}/rooms` | Retrieve all rooms |
+| GET | `/admin/hotel/{hotelId}/rooms/{roomId}` | Retrieve room details |
+| PATCH | `/admin/hotel/{hotelId}/rooms/{roomId}` | Update room |
+| DELETE | `/admin/hotel/{hotelId}/rooms/{roomId}` | Delete room |
+
+---
+
+## 📦 Inventory APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/admin/inventory/room/{roomId}` | Retrieve room inventory |
+| PATCH | `/admin/inventory/room/{roomId}` | Update room inventory and surge pricing |
+
+---
+
+## 👑 Admin APIs
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/admin/set-user-as-admin` | Grant Admin privileges to a user |
 
 ---
 
@@ -208,35 +306,31 @@ Access Protected APIs
 
 ### ✅ Strategy Pattern
 
-Used for dynamic hotel pricing.
+Used for implementing dynamic hotel pricing strategies.
 
-Current strategies:
+Benefits:
 
-- Base Pricing
-- Holiday Pricing
-- Occupancy Pricing
-
----
-
-### DTO Pattern
-
-Used to separate Entity models from API responses.
+- Easily add new pricing rules
+- No modification of existing code
+- Open/Closed Principle
 
 ---
 
-### Repository Pattern
+### ✅ Repository Pattern
 
-Used for clean database abstraction.
+Used for database abstraction.
 
 ---
 
-### Global Exception Handling
+### ✅ DTO Pattern
 
-Centralized exception management using:
+Separates Entity models from API responses.
 
-- GlobalExceptionHandler
-- ApiError
-- ApiResponse
+---
+
+### ✅ Global Exception Handling
+
+Centralized exception handling using Spring's `@ControllerAdvice`.
 
 ---
 
@@ -247,37 +341,22 @@ Centralized exception management using:
 - Java 25+
 - Maven
 - PostgreSQL
-- IntelliJ IDEA (Recommended)
 
 ---
 
-# ⚙ Installation
-
-Clone the repository
+## Clone Repository
 
 ```bash
 git clone https://github.com/yourusername/airbnb-backend.git
-```
 
-Move inside project
-
-```bash
-cd AirBnb
-```
-
-Install dependencies
-
-```bash
-mvn clean install
+cd airbnb-backend
 ```
 
 ---
 
-# 🗄 Configure Database
+## Configure Database
 
-Create a PostgreSQL database.
-
-Update your `application.properties`:
+Update `application.properties`
 
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/airbnb
@@ -293,21 +372,21 @@ spring.jpa.show-sql=true
 
 ---
 
-# ▶ Running the Application
+## Build Project
 
-Using Maven
+```bash
+mvn clean install
+```
+
+---
+
+## Run Application
 
 ```bash
 mvn spring-boot:run
 ```
 
-or
-
-```bash
-./mvnw spring-boot:run
-```
-
-Application starts at
+Application runs on
 
 ```
 http://localhost:8080
@@ -315,104 +394,9 @@ http://localhost:8080
 
 ---
 
-# 📦 API Modules
-
-### Authentication
-
-- Register
-- Login
-- JWT Token Generation
-
----
-
-### Hotels
-
-- Create Hotel
-- Update Hotel
-- Browse Hotels
-- View Hotels
-
----
-
-### Guests
-
-- Register Guest
-- View Guest
-- Guest Details
-
----
-
-### Booking
-
-- Book Hotel
-- Cancel Booking
-- Booking Status
-
----
-
-### Inventory
-
-- Add Inventory
-- Update Inventory
-- Room Availability
-
----
-
-### Admin
-
-- Reports
-- Hotel Management
-- Booking Management
-
----
-
-# 🛡 Security
-
-The project uses:
-
-- Spring Security
-- JWT Authentication
-- Authentication Filter
-- Authorization
-- Protected REST APIs
-
----
-
-# 📊 Database
-
-Main entities include:
-
-- Guest
-- Hotel
-- Booking
-- Room
-- Inventory
-- Hotel Contact
-
-Relationships are managed using Spring Data JPA.
-
----
-
-# 📈 Future Improvements
-
-- Payment Gateway Integration
-- Email Notifications
-- Hotel Reviews
-- Ratings
-- Image Upload
-- Search Filters
-- Wishlist
-- Redis Caching
-- Docker Support
-- Kubernetes Deployment
-- Swagger/OpenAPI Documentation
-- CI/CD Pipeline
-
----
-
 # 🧪 Testing
 
-Run all tests
+Run tests
 
 ```bash
 mvn test
@@ -420,30 +404,41 @@ mvn test
 
 ---
 
-# 🤝 Contributing
+# 📊 Project Highlights
 
-Contributions are welcome.
+- ✅ Spring Boot 3.5
+- ✅ Java 25
+- ✅ PostgreSQL
+- ✅ JWT Authentication
+- ✅ Refresh Tokens
+- ✅ Spring Security
+- ✅ Role-Based Access Control
+- ✅ Dynamic Pricing Strategy
+- ✅ Inventory Management
+- ✅ Hotel Management
+- ✅ Room Management
+- ✅ Guest Management
+- ✅ DTO Architecture
+- ✅ Repository Pattern
+- ✅ Strategy Pattern
+- ✅ Global Exception Handling
 
-1. Fork the repository
-2. Create a feature branch
+---
 
-```bash
-git checkout -b feature/new-feature
-```
+# 🚀 Future Improvements
 
-3. Commit changes
-
-```bash
-git commit -m "Add new feature"
-```
-
-4. Push
-
-```bash
-git push origin feature/new-feature
-```
-
-5. Create a Pull Request
+- Payment Gateway Integration
+- Hotel Reviews
+- Ratings
+- Wishlist
+- Redis Caching
+- Docker Support
+- Kubernetes Deployment
+- Swagger/OpenAPI Documentation
+- Email Notifications
+- CI/CD Pipeline
+- Image Upload Service
+- Elasticsearch for Hotel Search
 
 ---
 
@@ -451,16 +446,9 @@ git push origin feature/new-feature
 
 **Jay Dinesh Gajora**
 
-- Java Backend Developer
-- Spring Boot Developer
-- PostgreSQL
-- REST APIs
-- Spring Security
-- JWT Authentication
+Backend Developer | Java | Spring Boot | PostgreSQL | REST APIs | Spring Security
 
-GitHub: **https://github.com/yourusername**
-
-LinkedIn: **https://linkedin.com/in/yourprofile**
+LinkedIn: https://linkedin.com/in/jaygajora
 
 ---
 
@@ -470,14 +458,10 @@ This project is licensed under the MIT License.
 
 ---
 
-# ⭐ If you found this project helpful
-
-Please consider giving it a ⭐ on GitHub!
-
----
-
 <div align="center">
 
-**Built with ❤️ using Spring Boot & Java**
+⭐ If you found this project useful, consider giving it a star!
+
+Built with ❤️ using Spring Boot, Java & PostgreSQL
 
 </div>
