@@ -170,7 +170,7 @@ src
 # 🗄 Database Schema
 
 <p align="center">
-<img src="./AirBnb/docs/database-schema.png" width="1000">
+<img src="./AirBnb/docs/database.schema.jpeg" width="1000">
 </p>
 
 ### Main Entities
