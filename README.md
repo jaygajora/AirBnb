@@ -25,26 +25,6 @@ The backend follows a layered architecture using Spring Boot best practices.
 
 ---
 
-# 📖 Overview
-
-AirBnb Backend is a RESTful backend application built using **Spring Boot** that powers an Airbnb-like hotel booking platform.
-
-The project provides APIs for:
-
-- 🔐 Secure Authentication using JWT
-- 🏨 Hotel Management
-- 👤 Guest Management
-- 📅 Booking Management
-- 🛏 Room & Inventory Management
-- 💰 Dynamic Pricing Strategies
-- 📊 Admin Reporting
-- 🛡 Role-Based Authorization
-
-The architecture follows a clean layered design making the application scalable, maintainable, and easy to extend.
-
----
-
-
 # ✨ Features
 
 ### 🔐 Authentication
