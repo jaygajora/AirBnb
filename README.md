@@ -27,52 +27,14 @@ The backend follows a layered architecture using Spring Boot best practices.
 
 # ✨ Features
 
-### 🔐 Authentication
-- User Registration
-- User Login
-- JWT Authentication
-- Refresh Token Support
-- Role-Based Authorization
-
-### 👤 User Management
-- User Profile
-- Profile Update
-- Admin Promotion
-
-### 🏨 Hotel Management
-- Create Hotel
-- Update Hotel
-- Delete Hotel
-- Enable/Disable Hotel
-- View Hotel Information
-
-### 🛏 Room Management
-- Add Rooms
-- Update Rooms
-- Delete Rooms
-- View Rooms
-
-### 📦 Inventory Management
-- Manage Room Availability
-- Dynamic Surge Pricing
-- Booking Count Tracking
-
-### 👥 Guest Management
-- Add Guests
-- Update Guests
-- Delete Guests
-- View Guests
-
-### 💰 Dynamic Pricing
-- Strategy Pattern Implementation
-- Surge Pricing Support
-- Inventory-based Pricing
-
-### 🛡 Security
-- Spring Security
-- JWT Authentication
-- Access & Refresh Tokens
-- Role-Based Access Control
+- 🔐 Authentication
+- 👤 User Management
+- 🏨 Hotel Management
+- 🛏 Room Management
+- 📦 Inventory Management
+- 👥 Guest Management
+- 💰 Dynamic Pricing
+- 🛡 Security
 
 ---
 
